@@ -138,6 +138,106 @@ object String1P3 {
 }
 ```
 
+### 1.4 字符串中的变量代换
+在字符串中引用变量的值
+
+#### 1.4.1 字符串插值 - 字符串前加字母's'
+在每个字符串前的's'实际上是一个方法
+
+- $variable ----- println(s"Age is $age")
+- 使用表达式 ----- println(s"Age next year: ${age + 1}")
+
+#### 1.4.2 字符串插值 - 字符串前加字母'f'
+在字符串前加字母'f'，格式化内部字符串。eg: val out = f"$name, you weight $weight%.2f pounds."
+
+#### 1.4.3 字符串插值 - 字符串前加字母raw
+raw插入符"不会对字符串中的字符进行转义"
+
+##### 代码:
+```
+object String1P4 {
+
+  def main(args: Array[String]): Unit = {
+    strOfS()
+    strOfF()
+    strOfRaw()
+  }
+
+  def strOfS() : Unit = {
+    val name : String = "thinking"
+    val age : Int = 23
+
+    println(s"$name is $age years old")
+    println(s"Age next year: ${age +1}")
+  }
+
+  def strOfF() : Unit = {
+    val weight : Double = 120
+
+    println(f"my weight is $weight%.2f")
+  }
+
+  def strOfRaw() : Unit = {
+    val str = raw"thinking\nppp"
+    println(str)
+  }
+}
+```
+
+### 1.5 挨个处理字符串中的字符
+遍历字符串中的每个字符，在遍历的同时对字符串做些操作。可以使用map、foreach方法、for循环来遍历集合
+
+#### 1.5.1 map
+对于字符串字符序列集合，先使用filter过滤单个字符，然后调用map方法处理每个字符. eg: val upper = "thinking, fioa".filter(_ != 'i').map(_.toUpper)
+
+#### 1.5.2 使用for + yield语句实现1.5.1中的效果
+在for循环添加yield实际上将每次循环的结果放入一个临时存放区。等循环结束后，以集合的形式返回. eg: val upper = for(c <- "thinking, fioa") yield c.toUpper
+
+#### 1.5.3 传入函数到map中
+可以给map方法传入一个大的代码块. eg: val upper = "thinking, fioa".filter( _ != 'i').map(strToUpper)
+
+#### 1.5.4 foreach方法
+使用foreach方法操作每个Byte值. eg: "hello".getBytes.foreach(println)
+
+##### 代码:
+```
+object String1P5 {
+
+  def main(args: Array[String]): Unit = {
+    mapStr()
+    forStr()
+    mapOfMethod()
+  }
+
+  def mapStr() : Unit = {
+    val upper = "thinking, fioa".filter( _ != 'i').map(_.toUpper);
+    println(upper)
+  }
+
+  def forStr() : Unit = {
+    val upper = for( c <- "thinking, fioa") yield c.toUpper
+    println(upper)
+  }
+  
+  def mapOfMethod() : Unit = {
+    val upper = "thinking, fioa".filter( _ != 'i').map(strToUpper)
+    println(upper)
+  }
+
+  def strToUpper(c : Char) : Char = {
+    c.toUpper
+  }
+}
+```
+
+### 1.6 字符串中的查找模式
+判断一个字符串是否符合一个正则表达式
+
+#### 1.6.1 创建Regex对象
+在一个String上调用.r方法可以创建一个Regex对象. val numPatter = "[0-9]+".r
+
+### 1.6.2查找匹配方法： findFirstIn(含有一个匹配) + findAllIn(全部匹配)
+
 
  
 
