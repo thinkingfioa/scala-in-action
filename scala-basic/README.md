@@ -85,8 +85,60 @@ object String1P1 {
 }
 ```
 
-### 1.2 创建多个字符串
- 
+### 1.2 创建多行字符串
+Scala使用三个双引号创建多行字符串
+
+1. 多行字符串，所见即所得。也就是，你在代码中怎么写，输出就是什么样
+2. 使用特殊字符+stripMargin，达到多行字符串都是定格写
+3. 多行字符串单行显示， """moreLineStr""".stripMargin.replaceAll("\n", " ")
+4. 多行字符串语法中允许写单引号和双引号，无需转义
+
+##### 代码:
+```
+object String1P2 {
+
+  def main(args: Array[String]): Unit = {
+    val moreStr = moreLineStr
+    println(moreStr)
+
+    val oneStr = singleLine
+    println(oneStr)
+  }
+
+  def moreLineStr : String = {
+     """ thinking_fioa
+      | luweilin"""".stripMargin
+
+  }
+
+  def singleLine : String = {
+    """" "thinking_fiao"
+      | 'luweilin'""".stripMargin.replace("\n", "")
+  }
+}
+```
+
+### 1.3 分割字符串
+使用split("...")分割一个字符串。split支持使用正则表达式，eg： str.split("\\s+")
+
+##### 代码:
+```
+object String1P3 {
+
+  def main(args: Array[String]): Unit = {
+    val str : String = "thinking, fioa, lu ppp"
+    val strArray : Array[String] = splitStr(str)
+    strArray.foreach(println)
+  }
+
+  def splitStr(str: String) : Array[String] = {
+    val strArray: Array[String] = str.split("\\s+").map(_.trim)
+    strArray
+  }
+}
+```
+
+
  
 
 
