@@ -234,9 +234,94 @@ object String1P5 {
 判断一个字符串是否符合一个正则表达式
 
 #### 1.6.1 创建Regex对象
-在一个String上调用.r方法可以创建一个Regex对象. val numPatter = "[0-9]+".r
+1. 在一个String上调用.r方法可以创建一个Regex对象. val numPattern = "[0-9]+".r
+2. 创建Regex实例. val numPattern = new Regex("[0-9]+")
 
-### 1.6.2查找匹配方法： findFirstIn(含有一个匹配) + findAllIn(全部匹配)
+### 1.6.2 查找匹配方法： findFirstIn(含有一个匹配) + findAllIn(全部匹配)
+- findFirstIn方法返回一个Option[String]。可以使用Option类中的getOrElse方法，这个将在20.6节介绍更多内容
+- findAllIn方法返回一个迭代器，可以直接使用foreach方法遍历。或者toArray方法转换成Array数组
+
+##### 代码:
+```
+object String1P6 {
+
+  def main(args: Array[String]): Unit = {
+    val numPatter = "[0-9]+".r
+    val str : String = "123 Main Stree Suit 101"
+    firstReg(str, numPatter)
+    allReg(str, numPatter)
+
+    findRegAndOption(str, new Regex("[9]+"))
+  }
+
+  def firstReg(str: String, numPattern: Regex) : Unit = {
+    numPattern.findFirstIn(str).foreach(println)
+    println("end of firstReg")
+  }
+
+  def allReg(str: String, numPattern : Regex) : Unit = {
+    numPattern.findAllIn(str).foreach(println)
+    println("end of allReg")
+  }
+
+  def findRegAndOption(str: String, numPattern: Regex) : Unit = {
+    println(numPattern.findFirstIn(str).getOrElse("no match"))
+  }
+}
+```
+
+### 1.7 字符串中的替换模式
+使用正则表达式匹配一段字符串，然后替换它们。注意,String是不可变的，请一定记得把结果赋给一个新的变量
+
+#### 1.7.1 使用String类的方法
+- replaceAll ----- 替换所有匹配的字符串. eg: val result = "123".replaceAll("[0-9]", "x")
+- replaceFirst ----- 替换第一个匹配的字符串. eg: val result = "123".replaceFirst("[0-9]", "x")
+
+#### 1.7.2 使用正则表达式的方法
+- replaceAllIn ----- 替换所有匹配的字符串. eg: val result = regex.replaceAllIn("123 Main Street", "x")
+- replaceFirstIn ----- 替换第一个匹配的字符串. eg: val result = regex.replaceAll("Hello world", "J")
+
+##### 代码:
+```
+object String1P6 {
+
+  val originStr : String = "123 Main Street 456"
+
+  def main(args: Array[String]): Unit = {
+    val return1 = replaceOfString(originStr)
+    println(s"return 1 is ${return1._1}, return 2 is ${return1._2} ")
+
+    val return2 = replaceOfRegex("[0-9]+".r)
+    println(s"return 1 is ${return2._1}, return 2 is ${return2._2} ")
+  }
+
+  private def replaceOfString(str : String) : (String, String) = {
+    val allStr : String = str.replaceAll("[0-9]+", "x")
+    val firstStr : String = str.replaceFirst("[0-9]+", "x")
+    (allStr, firstStr)
+  }
+
+  private def replaceOfRegex(regex : Regex) : (String, String) = {
+    val allStr : String = regex.replaceAllIn(originStr, "x")
+    val firstStr : String = regex.replaceFirstIn(originStr, "x")
+    (allStr, firstStr)
+  }
+}
+```
+
+### 1.8 抽取String中模式匹配部分
+抽取一个或者多个在字符串中正则匹配到的部分
+
+#### 1.8.1 简单匹配
+定义想要抽取的正则表达式，在它们周围加上括号. eg: val pattern = "([0-9]+) ([A-Za-z]+)".r
+
+#### 1.8.2 复杂匹配
+通常，可能定义多个正则表达式，用于处理不管用户输入什么，都可以匹配到
+
+##### 代码:
+```
+
+```
 
 
  
