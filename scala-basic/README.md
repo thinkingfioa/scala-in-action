@@ -2,14 +2,14 @@
 
 ```
 @author 鲁伟林
-Scala基础知识介绍，主要包括《Scala编程实战》的第1章、
+Scala基础知识介绍，主要包括《Scala编程实战》的基础章节
 
 GitHub地址: https://github.com/thinkingfioa/scala-in-action
 本人博客地址: http://blog.csdn.net/thinking_fioa/article/details/78265745
 ```
 
-# 第一章 字符串
-[项目地址ChapterOne](https://github.com/thinkingfioa/scala-in-action/tree/master/scala-basic/src/main/scala/org/lwl/scala/basic/chapter/one)
+# 第1章 字符串
+ [第1章项目源码阅读](https://github.com/thinkingfioa/scala-in-action/tree/master/scala-basic/src/main/scala/org/lwl/scala/basic/chapter/one)
 
 ## 1. 引言
 初一看Scala的String和Java的String并没有什么区别，基本上Java的String所具有的属性Scala的String都具有。另一方面，由于Scala提供了隐式转换的魔法，Scala的String同时还拥有StringOps类、StringLike类WrappedString等方法。
@@ -89,7 +89,7 @@ object String1P1 {
 Scala使用三个双引号创建多行字符串
 
 1. 多行字符串，所见即所得。也就是，你在代码中怎么写，输出就是什么样
-2. 使用特殊字符+stripMargin，达到多行字符串都是定格写
+2. 使用特殊字符+stripMargin，达到多行字符串都是顶格写
 3. 多行字符串单行显示， """moreLineStr""".stripMargin.replaceAll("\n", " ")
 4. 多行字符串语法中允许写单引号和双引号，无需转义
 
@@ -237,7 +237,7 @@ object String1P5 {
 1. 在一个String上调用.r方法可以创建一个Regex对象. val numPattern = "[0-9]+".r
 2. 创建Regex实例. val numPattern = new Regex("[0-9]+")
 
-### 1.6.2 查找匹配方法： findFirstIn(含有一个匹配) + findAllIn(全部匹配)
+#### 1.6.2 查找匹配方法： findFirstIn(含有一个匹配) + findAllIn(全部匹配)
 - findFirstIn方法返回一个Option[String]。可以使用Option类中的getOrElse方法，这个将在20.6节介绍更多内容
 - findAllIn方法返回一个迭代器，可以直接使用foreach方法遍历。或者toArray方法转换成Array数组
 
@@ -316,15 +316,61 @@ object String1P6 {
 定义想要抽取的正则表达式，在它们周围加上括号. eg: val pattern = "([0-9]+) ([A-Za-z]+)".r
 
 #### 1.8.2 复杂匹配
-通常，可能定义多个正则表达式，用于处理不管用户输入什么，都可以匹配到
+通常，可能定义多个正则表达式，用于处理不管用户输入什么，都可以匹配到，所以使用到match-case语法。具体将在3.7节学习
 
 ##### 代码:
 ```
+object String1P8 {
 
+  def main(args: Array[String]): Unit = {
+    one("([0-9]+) ([A-Za-z]+)".r, "100 apple")
+  }
+
+  def one(pattern : Regex,inputStr : String) : Unit = {
+    val pattern(count, fruit) = inputStr
+    printf(s"$fruit price is $count")
+  }
+}
 ```
 
+### 1.9 访问字符串中的一个字符
+得到字符串中指定位置的一个字符
 
- 
+- 使用Java中的charAt方法 ----- "hello".charAt(0)
+- 使用Scala中的Array符号 ----- "hello"(0)
+
+### 1.10 在String类中添加自定义的方法
+在Scala 2.10以后，通过定义一个隐式转换的类，在类里定义一些方法，以实现添加自定义的方法。注意：隐式转换类必须定义在一个类或者对象或者包的内部。请给声明自定义方法时，加上返回类型
+
+##### 代码:
+```
+object String1P10 {
+
+  def main(args: Array[String]): Unit = {
+    println("ABCDEFT".increment)
+    println("  ".asBoolean.toString)
+  }
+
+  implicit class StringImprovements(val str: String) {
+    def increment : String = str.map(c => (c+1).toChar)
+    def asBoolean : Boolean = str match  {
+      case "0" | "zero" | "" | " " => false
+      case _ => true
+    }
+  }
+}
+```
+
+#### 讨论
+隐式转换最大的好处就是：不需要继承自一个现有的类再去添加新的功能。例如，没有必要去创建继承自String类叫作MyString的新类。其工作原理:
+
+1. 编译器找到一个"ABCDEFT"的字符串常量
+2. 编译器发现要在String上调用increment方法
+3. 因为编译器在String类中找不到可调用的方法，于是开始在当前范围内搜索一个接收String作为参数的隐式转换
+4. 编译器找到StringImprovements类，并在这个类中找到increment方法
+
+## 第2章 数值
+ [第2章项目源码阅读](https://github.com/thinkingfioa/scala-in-action/tree/master/scala-basic/src/main/scala/org/lwl/scala/basic/chapter/two)
 
 
 
