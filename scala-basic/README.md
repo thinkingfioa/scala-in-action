@@ -371,7 +371,45 @@ object String1P10 {
 
 ## 第2章 数值
  [第2章项目源码阅读](https://github.com/thinkingfioa/scala-in-action/tree/master/scala-basic/src/main/scala/org/lwl/scala/basic/chapter/two)
+ 
+### 引言
+Scala所有的数值都是对象，包括Byte、Char、Double、Float、Int、Long和Short。其数值类型范围与Java的基本数据类型范围相同。
 
+### 2.1 从字符串到数值
+把一个字符串转换成一个Scala的数值类型。
+
+- 使用String的to*方法。eg: val age : Int = "19".toInt
+- BigInt和BigDecimal类型的数值也可以通过字符串创建。eg: val b : BigDecimal = BigDecimal("3.1415926")
+- String中的toInt方法不支持传入进制，所以采用java.lang.Integer类的parseInt方法。 eg: Integer.parseInt("10", 2);
+
+##### 代码:
+```
+object Number2P1 {
+
+  def main(args: Array[String]): Unit = {
+
+    val str : String = "111"
+
+    val num : Int = str.toInt
+    println(num)
+
+    println(str.toInt2(2))
+    println(Integer.parseInt(str, 2))
+
+  }
+
+  implicit class StringToInt(str: String) {
+   def toInt2(radix : Int) : Int = Integer.parseInt(str, radix)
+  }
+}
+```
+
+### 2.2 数值类型转换
+把一个数值类型转换成另一种数值类型，如把Int类型转换成Double类型。在Scala中，不可以直接进行强制类型转换，使用在所有数值类型上都可用的to*方法。eg: 19.45.toInt
+
+- 为了避免类型转换可能出现错误，在转换前可以使用相应的isValid方法确认是否可以进行类型转换。eg: a.isValidShort
+
+### 2.3 重载默认数值类型
 
 
 
