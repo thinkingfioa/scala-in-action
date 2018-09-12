@@ -410,7 +410,44 @@ object Number2P1 {
 - 为了避免类型转换可能出现错误，在转换前可以使用相应的isValid方法确认是否可以进行类型转换。eg: a.isValidShort
 
 ### 2.3 重载默认数值类型
+对一个数值类型变量赋值时，Scala会自动把数值类型赋值给变量. eg: val a =1d, a的类型则是Double。另一个方案是:  val b = 0: Double, b的类型则是Double
 
+### 2.4 替代 ++ 和 --
+像其他语言里那样使用++和--来递增或者递减一个变量，但是Scala里没有这样的操作符。需要使用+=、-=、*=和/=方法来实现递增。eg:  a +=1 
+
+### 2.5 浮点数的比较
+比较两个浮点数的值，与其他语言一样，两个应该相等的浮点数有可能实际上是不等的
+
+##### 代码:
+```
+object Number2P5 {
+
+  def main(args: Array[String]): Unit = {
+    val d3 = 0.3d
+    val addDouble : Double = sumDouble(0.2d, 0.1d)
+    println(s" $d3 != $addDouble")
+    println(~=(d3, addDouble, 0.000001))
+  }
+
+  /**
+    * 输出 0.30000000000000004
+    */
+  def sumDouble(d1 : Double, d2 : Double) : Double = {
+    d1 + d2
+  }
+
+  def ~=(x: Double, y:Double, precision: Double): Boolean = {
+    if((x-y).abs < precision) {
+      true
+    } else {
+      false
+    }
+  }
+}
+```
+
+### 2.6 处理大数
+需要编写一个处理非常大的整数的程序
 
 
 
