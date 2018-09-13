@@ -407,7 +407,7 @@ object Number2P1 {
 ### 2.2 数值类型转换
 把一个数值类型转换成另一种数值类型，如把Int类型转换成Double类型。在Scala中，不可以直接进行强制类型转换，使用在所有数值类型上都可用的to*方法。eg: 19.45.toInt
 
-- 为了避免类型转换可能出现错误，在转换前可以使用相应的isValid方法确认是否可以进行类型转换。eg: a.isValidShort
+- 为了避免类型转换可能出现错误，在转换前可以使用相应的isValid方法确认是否可以进行类型转换。eg: a.isValidShort，如果超过了数值类型，也会返回false
 
 ### 2.3 重载默认数值类型
 对一个数值类型变量赋值时，Scala会自动把数值类型赋值给变量. eg: val a =1d, a的类型则是Double。另一个方案是:  val b = 0: Double, b的类型则是Double
@@ -447,8 +447,48 @@ object Number2P5 {
 ```
 
 ### 2.6 处理大数
-需要编写一个处理非常大的整数的程序
+编写一个处理非常大的整数的程序，在Scala语言中可以使用BigInt和BigDecimal类。eg: var b = BigDecimal(123456789.12345678)
 
+### 2.7 生成随机数
+使用Scala的Scala.util.Random生成随机数. eg: val random = new Random()
+
+- random.nextInt ----- 返回一个Int范围的随机数
+- random.nextInt(100) ----- 返回一个0到99的随机数
+- random.nextFloat ----- 返回一个0.0 到 1.0的随机数
+
+##### 代码:
+```
+object Number2P7 {
+
+  def main(args: Array[String]): Unit = {
+    println(random(100))
+
+    randomMore(6)
+  }
+
+  def random(upper : Int) : Int = {
+    val random = new Random()
+    random.nextInt(upper)
+  }
+
+  def randomMore(count : Int) : Unit = {
+    val random = new Random(System.currentTimeMillis())
+    for(i <- 1 to 10) yield println(random.nextInt(100))
+  }
+}
+```
+
+### 2.8 创建一个数值区间、列表或者数组
+在for循环里或者为了测试创建一个数值区间、列表或者数组
+
+- var r = 1 to 10 ------ 得到Range(1, 2, 3,..., 10)
+- var r = 1 until 5 ------ 得到Range(1, 2, 3, 4)
+- var r = 1 to 10 by 2 -----  得到Range(1, 3, 5, 7, 9)
+- for(c <- 1 until 5) println(i)
+- val x = (1 to 10).toArray/toList ----- 快速生成列表和数值
+
+### 2.9 格式化数值和金额
+对数值或者金额的小数位数或逗号进行格式化，特别是输出时，非常有用
 
 
 
