@@ -490,6 +490,181 @@ object Number2P7 {
 ### 2.9 格式化数值和金额
 对数值或者金额的小数位数或逗号进行格式化，特别是输出时，非常有用
 
+- 基本数值的格式化输出 ----- eg: "f%pi%1.5f"，表示整数位1位，小数位5位
+- 简单的加逗号 ----- java.text.NumberFormat.getIntegerInstance
+
+##### 代码:
+```
+object Number2P8 {
+
+  def main(args: Array[String]): Unit = {
+    // 输出: 10,000,000
+    System.out.println(printF(10000000))
+  }
+
+  def printF(money : Long ) : String = {
+    val formatter = java.text.NumberFormat.getIntegerInstance()
+    formatter.format(money)
+  }
+}
+```
+
+## 3. 控制结构
+Scala语言和Java语言在控制结构部分很像，但是又存在有趣的差别。 [第3章项目源码阅读](https://github.com/thinkingfioa/scala-in-action/tree/master/scala-basic/src/main/scala/org/lwl/scala/basic/chapter/three)
+
+### 3.1 for和foreach循环
+循环语句主要用于处理三个问题: 1. 遍历一个集合中的所有元素; 2. 对集合中的每个元素进行某个操作; 3. 利用现有的集合创建新的集合
+
+#### 3.1.1 for循环常用的遍历
+个人比较推荐如下for循环语法遍历集合
+
+```
+def forF(array : Array[String]): Unit = {
+    for(entry <- array) {
+      println(entry.toUpperCase())
+    }
+  }
+```
+
+#### 3.1.2 从for循环中返回值
+使用for/ield组合，输入一个集合，返回一个新的集合。在for循环添加yield实际上将每次循环的结果放入一个临时存放区。等循环结束后，以集合的形式返回。
+
+```
+def forYield(array : Array[String]) : Array[String] = {
+	for(entry <- array) yield {
+  		entry.toUpperCase()
+	}
+}
+```
+
+#### 3.1.3 for循环计数器
+访问循环内的计数器，即通过一个计数器访问数组元素，使用array.indices
+
+```
+def forCount(array : Array[String]): Unit = {
+  for(i <- array.indices) {
+    println(s"$i is ${array(i)}")
+  }
+}
+```
+
+#### 3.1.4 遍历一个Map
+遍历Map中的键值对，下面的Map循环方法最简洁和可读
+
+```
+def forMap(namesMap : Map[String, Int]) : Unit = {
+  for((k,v) <- namesMap) {
+    println(s"key is $k, value is $v")
+  }
+}
+```
+
+#### 3.1.5 另一种遍历集合方式
+使用foreach, map, flatmap, collect, reduce等方法
+
+1. array.foreach(println) ----- 遍历array数组，可以使用自定义方法替换println方法
+2. array.foreach( e => println(e.toUpperCase)) ----- 使用匿名函数的语法
+3. array.foreach{ e => | val s = e.toUpperCase | println(s)|} ----- 实现多行函数
+
+#### 3.1.6 for循环式是如何被解释的
+提供简化版的规则，帮助理解for循环执行过程
+
+1. 遍历集合的一个简单的for循环被解释为foreach方法调用
+2. 带有卫语句的for循环(3.3节)被解释为一个foreach调用后在集合上调用withFilter方法的序列
+3. 带有yield表达式的for循环被解释为集合上调用map方法
+4. 带有yield表达式和卫语句被解释为在集合上调用withFilter方法，紧接着一个map方法
+
+### 3.2 在for循环中使用多个计数器
+创建有多个计数器的循环，如遍历多维数组的情况。推荐使用大括号的代码风格，如下:
+
+##### 代码
+```
+def forMoreCount() : Unit = {
+  for {
+    i <- 1 to 3
+    j <- 1 to 5
+    k <- 1 to 10
+  } {
+    println("next: ")
+    println(s"i : $i, j : $j, k : $k")
+  }
+}
+```
+
+### 3.3 在for循环中嵌入if语句(卫语句)
+for循环中添加一个或者多个条件语句，典型的应用场景就是将一个元素从集合中过滤掉。 推荐使用大括号编码风格
+
+#### 代码
+```
+def forIf() : Unit = {
+  for {
+    i <- 1 to 10
+    if i> 3
+    if i<= 8
+    if i % 2 == 0
+  } println(i)
+}
+```
+
+### 3.4 创建for表达式( for/yield组合 )
+对一个已有的集合中的每个元素应用某个算法，从而生成新的集合。在for循环中使用yield语句的方式通常被叫作for推导
+
+##### 代码
+```
+def forYieldMoreLine(array : Array[String]) : Array[Int] = {
+  for( e <- array) yield {
+    val eUpper = e.toUpperCase()
+    eUpper.length
+  }
+}
+```
+
+#### 理解for/yield表达式
+1. 开始运行时，for/yield循环立刻创建一个新的空集合(Bucket)，类型与输入的集合相同
+2. for循环每次遍历，都会在输入集合中的每个元素基础上创建新的元素，加入到Bucket中
+3. 循环结束后，Bucket中的所有内容都被返回
+
+### 3.5 实现break和continue
+遗憾的是Scala没有break或者continue关键字，但是scala.util.control.Breaks提供了类似的功能。相对于Java来说，Scala的break和continue较为复杂化。个人不喜欢这种风格
+
+##### 代码
+```
+import util.control.Breaks._
+
+object Ctrl3P5 {
+
+  def forBreak(array : Array[Int]) : Unit = {
+    breakable {
+      for(i <- array) {
+        if(i== 2) {
+          break()
+        } else {
+          print(i+", ")
+        }
+      }
+    }
+  }
+
+  def forContinue(array : Array[Int]) : Unit = {
+    for(i <- array) {
+      breakable {
+        if(i== 2) {
+          break()
+        } else {
+          print(i +", ")
+        }
+      }
+    }
+  }
+}
+```
+
+### 3.6 像三元运算符一样使用if
+Java提供条件运算符 ? : 称为三元运算符，但是Scala没有提供。在scala中只能使用if/else语句。eg
+x >=0 ? "yes": "no" 等价于 if(x>=0) "yes" else "no"
+
+### 3.7 像swtich语句一样使用匹配表达式
+
 
 
 
