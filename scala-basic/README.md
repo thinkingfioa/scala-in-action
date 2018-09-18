@@ -664,8 +664,64 @@ Java提供条件运算符 ? : 称为三元运算符，但是Scala没有提供。
 x >=0 ? "yes": "no" 等价于 if(x>=0) "yes" else "no"
 
 ### 3.7 像swtich语句一样使用匹配表达式
+Java中基于整数的switch语句，Scala也支持使用@switch注解来满足switch语句，同时@switch注解性能会更优越
 
+##### 代码
+```
+def switchTypo(i : Int) : String = {
+  (i : @switch) match {
+    case 1 => "One"
+    case 2 => "Two"
+    case _ => "Other"
+  }
+}
+```
 
+匹配表达式不局限于整数，它是非常灵活的，如下类型的匹配也是支持的
+
+##### 代码
+```
+def switchType(x : Any) : String = {
+  (x : @switch) match {
+    case s : String => "One"
+    case i : Int => "Two"
+    case _ => "Other"
+  }
+}
+```
+
+#### 3.7.1 处理缺省情况
+处理缺省情况的两种情况:
+
+- 不关心缺省匹配的值，使用通配符去捕获 ----- case _ => println("default")
+- 关系缺省匹配的值，指定一个变量，然后在表达式右侧使用该变量 ----- case default => println(default)
+- 如果不处理缺省情况，可能会产生MatchError错误。所以建议要处理default case
+
+### 3.8 一条case语句匹配多个条件
+多个匹配条件需要执行相同的业务逻辑时，使用一条case语句匹配多个条件
+
+##### 代码
+```
+def moreCase(x : Int) : Unit = {
+  (x : @switch) match {
+    case 1 | 3 | 5 | 7 | 9 => println("odd")
+    case 2 | 4 | 6 | 8 | 10 => println("even")
+  }
+}
+```
+
+### 3.9 将匹配表达式的结果赋值给变量
+将一个匹配表达式返回值赋值给一个变量，或将匹配表达式作为方法的主体
+
+```
+def isTrue(a : Any) = a match{
+  case 0 | "" => false
+  case _ => true
+}
+```
+
+### 3.11 在匹配表达式中使用Case类
+在一个匹配表达式中匹配不同的case类（或者case对象）。如下面的代码,Dog和Cat case类以及Woodpecker case对象都是Animal trait的子类型
 
 
 
