@@ -720,10 +720,105 @@ def isTrue(a : Any) = a match{
 }
 ```
 
-### 3.11 在匹配表达式中使用Case类
+### 3.12 在匹配表达式中使用Case类
 在一个匹配表达式中匹配不同的case类（或者case对象）。如下面的代码,Dog和Cat case类以及Woodpecker case对象都是Animal trait的子类型
 
+##### 代码
+```
+trait Animal
 
+case class Dog(name : String) extends Animal
+
+case class Cat(name : String) extends Animal
+
+case object Woodpecker extends Animal
+
+object Ctrl3P11 {
+
+  def main(args: Array[String]): Unit = {
+    println(determineType(Dog("ppp")))
+    println(determineType(Cat("fioa")))
+    println(determineType(Woodpecker))
+  }
+
+  def determineType(x : Animal) : String = x match {
+    case Dog(moniker) => "Got a Dog, name = "+moniker
+    case _ : Cat => "Got a Cat"
+    case Woodpecker => "That was a Wood"
+    case _ => "default"
+  }
+
+}
+```
+
+### 3.13 给Case语句添加if表达式（卫语句)
+给匹配的表达式内的case语句添加合适的逻辑，帮助增强case语句的约束条件
+
+```
+object Ctrl3P13 {
+
+  def main(args: Array[String]): Unit = {
+    caseIfNum(1)
+    caseIfNum(2)
+  }
+
+  def caseIfNum(x : Int) : Unit = {
+    (x : @switch) match {
+      case m if m==1 => println("one, a lonely number")
+      case n if n==2 || n==3 => println(n)
+      case _ => println("default")
+    }
+  }
+}
+```
+
+### 3.14 使用匹配表达式替换isInstanceOf
+判断对象是否匹配一个类型，可以通过使用isInstanceOf来判断，eg: if(x isInstanceOf[Class]) 。但当需求负责情况写，写一个代码块去匹配一种类型或者多个不同的类型的可读性更好。
+
+##### 代码
+```
+trait SentientBeing
+trait Animal2 extends SentientBeing
+case class Pig(name : String) extends Animal2
+case class Person(name:String, age : Int) extends SentientBeing
+
+object Ctrl3P14 {
+
+  def main(args: Array[String]): Unit = {
+    casePrintInfo(Person("luweilin", 24))
+    casePrintInfo(Pig("ppp"))
+
+    if(Pig("ppp").isInstanceOf[SentientBeing]) {
+      println("true")
+    }
+  }
+
+
+  def casePrintInfo(x : SentientBeing) : Unit = x match {
+    case Person(name, age) => println(s"$name is $name, age is $age")
+    case Pig(name) => println(s"pig name is $name")
+    case _ => println("default")
+  }
+}
+```
+
+### 3.15 在匹配的表达式中使用List
+List数据结构和其他的集合数据结构略有不同。列表由单元开始，Nil元素结尾。如果下递归打印内容
+
+```
+object Ctrl3P15 {
+
+  def main(args: Array[String]): Unit = {
+    val x = List(1,2,3,4)
+    println(caseList(x))
+  }
+
+  def caseList(x : List[Int]) : String = x match {
+    case s :: rest => s +", " + caseList(rest)
+    case Nil => ""
+  }
+}
+```
 
 
 
