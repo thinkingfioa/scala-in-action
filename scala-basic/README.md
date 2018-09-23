@@ -820,8 +820,80 @@ object Ctrl3P15 {
 }
 ```
 
+### 3.16 用try/catch匹配一个或多个异常
+在try/catch块捕捉一个或者更多的异常
 
+```
+def moreException(fileName : String) : Unit = {
+  try {
+    // read config File
+  } catch {
+    case e : FileNotFoundException => println("Colud find that file.")
+    case e : IOException => println("IOException trying to read that file")
+  }
+}
+```
 
+注意: Scala中没有受检异常，因此不需要指定抛出异常的方法。如果需要声明方法抛出的异常，或者需要和Java交互，在定义方法时添加@throws注解
+
+```
+@throws(classOf[NumberFormatException])
+def throwException(fileName : String) : Unit = {
+  try {
+    // read config File
+  } catch {
+    case e : NumberFormatException => throw e
+  }
+}
+```
+
+### 3.17 在try/catch/finally块中使用变量前定义变量问题
+在try代码中使用一个变量，并在finally代码块中访问该对象，如调用对象的close方法。一般情况下，在try/catch块前声明字段为Option，然后在try子句中创建一个Some对象，finally中执行关闭。在Scala中建议不要使用null
+
+##### 代码:
+```
+def tryCatchFinally(fileName : String) : Unit = {
+  var in = None : Option[FileInputStream]
+
+  try {
+    // open file Name
+  } catch {
+    case cause: IOException => cause.printStackTrace()
+  } finally {
+    if(in.isDefined) {
+      in.get.close()
+    }
+  }
+}
+```
+
+### 3.18 创建自定义控制结构
+Scala语言的创造者有意决定通过Scala类库去实现功能而不是去创建一些关键字。典型的例子就是: break和continue关键字。开发者可以自定义控制结构，创建可用的DSL去给他人所用
+
+#### 3.18.1 创建一个类似于while循环控制结构
+```
+object Ctrl3P18 {
+
+  def main(args: Array[String]): Unit = {
+    var i =0
+    whilst(i<5) {
+      println(s"index: $i")
+      i += 1
+    }
+  }
+
+  @tailrec
+  def whilst(testCondition : => Boolean) (codeBlock : => Unit) {
+    if(testCondition) {
+      codeBlock
+      whilst(testCondition)(codeBlock)
+    }
+  }
+}
+```
+
+##### 解释:
+自定义函数名:whilst，接受两个参数列表，第一个是参数列表测试条件，一个表示用户想要运行的代码块
 
 
 
