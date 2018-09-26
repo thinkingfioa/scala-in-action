@@ -895,10 +895,73 @@ object Ctrl3P18 {
 ##### 解释:
 自定义函数名:whilst，接受两个参数列表，第一个是参数列表测试条件，一个表示用户想要运行的代码块
 
+## 4. 类和属性
+与Java相比，Scala在类的声明、构造和字段的访问控制存在很大的差异。Java更啰嗦，Scala更简洁
 
+### 4.1 创建一个主构造函数
+Scala构造函数分为：主构造函数 + 辅助构造函数。一个主构造函数是以下的组合：
 
+1. 构造函数参数
+2. 在类内部被调的方法
+3. 类内部执行的语句和表达式
 
+```
+class Person(var firstName : String, var lastName : String) {
+  println("the constructor begins")
 
+  // some class field
+  private val HOME = System.getProperty("user.name")
+  var age = 0
+
+  override def toString: String = s"$firstName $lastName is $age years old"
+
+  def printHome(): Unit = {
+    println(s"HOME = $HOME")
+  }
+
+  printHome()
+}
+```
+
+解释:
+
+1. Scala主构造函数相当模糊，Person类的整个都是主构造函数部分
+2. Person类的构造函数中两个参数firstName、lastName被定义为var字段，scala会默认为其添加get/set方法。而属性HOME则没有，private val相当于private final，不可以被其他对象直接访问
+3. Scala中描述符: private val，相当于Java中的private final
+4. Scala中默认添加的get/set方法，比如上诉代码中age属性，会添加方法名叫age() ----- getter方法，age_$eq(int age) ----- setter方法
+
+### 4.2 控制构造函数字段的可见性(var/val/private)
+Scala中构造函数参数可见性，使用var/val/private关键字修饰所控制。可通过下列口诀记住:
+
+1. 如果一个字段被声明为var，Scala会为该字段生成getter和setter方法
+2. 如果字段是val，Scala只会生成getter方法
+3. 如果一个字段没有var或val修饰符，Scala比较保守，不会生成getter方法和setter方法
+4. 字段有使用var或val修饰符，且同时使用private关键字修饰，也不会生成getter方法和setter方法
+
+#### 4.2.1 Case类
+case类中构造函数参数的生成方式与其他的类略有不同。Case类的构造函数参数默认是val，生成getter方法，其他类默认不会生成getter方法和setter方法
+
+##### 代码:
+```
+class OtherPerson(name :String) {
+
+}
+
+case class CasePerson(name : String) {
+
+}
+
+object Class4P2 {
+  val otherPerson : OtherPerson = new OtherPerson("fioa")
+  val casePerson : CasePerson = CasePerson("ppp")
+
+//  println(s"otherPerson ${otherPerson.name}") 报错
+  println(s"casePerson ${casePerson.name}")
+}
+```
+
+### 4.3 定义辅助构造函数
+定义多个辅助构造函数，方便用户通过不同的方式创建对象实例
 
 
 
