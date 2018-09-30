@@ -1047,8 +1047,48 @@ object Class4P5 {
 }
 ```
 
+### 4.6 覆写默认的访问和修改方法
+覆写Scala自动生成的getter或者setter。Scala中这个优点麻烦，推荐下列方法来实现
 
+```
+class Stock(var _symbol : String) {
+  def symbol() : String = _symbol
 
+  def symbol_ (s :String) : Unit =  {
+    this._symbol = symbol
+  }
+}
+```
+
+### 4.7 阻止生成getter和setter方法
+Scala中如果某个变量定义为var，将会自动生成getter和setter方法;如果变量定义成val，将会自动生成setter方法
+
+1. 如果是class，字段没有使用var/val修饰，则不会生成getter和setter方法。如果是case class，字段没有使用var/val修饰，默认为val，生成getter方法
+2. 使用private或private[this]访问修饰符定义字段
+
+#### private 和 private[this]对比
+1. 使用private修饰字段，则Scala不会自动生成getter和setter方法。
+2. 定义一个private[this]字段让私有化更进一步，让字段对象私有化
+3. 如下代码，price字段无法被相同类型的其他实例访问
+
+##### 代码
+```
+class Book {
+  private[this] var price : Double = _
+
+  def setPrice(price:Double ): Unit = {
+    this.price = price
+  }
+
+  def isHigher(that : Book): Boolean = {
+    // 报错，无法在this对象中访问that对象的price
+//    this.price > that.price
+    true
+  }
+}
+```
+
+### 4.8 将代码块或者函数赋给字段
 
 
 
