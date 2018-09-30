@@ -896,7 +896,8 @@ object Ctrl3P18 {
 自定义函数名:whilst，接受两个参数列表，第一个是参数列表测试条件，一个表示用户想要运行的代码块
 
 ## 4. 类和属性
-与Java相比，Scala在类的声明、构造和字段的访问控制存在很大的差异。Java更啰嗦，Scala更简洁
+与Java相比，Scala在类的声明、构造和字段的访问控制存在很大的差异。Java更啰嗦，Scala更简洁。[第4章项目源码阅读](https://github.com/thinkingfioa/scala-in-action/tree/master/scala-basic/src/main/scala/org/lwl/scala/basic/chapter/four)
+
 
 ### 4.1 创建一个主构造函数
 Scala构造函数分为：主构造函数 + 辅助构造函数。一个主构造函数是以下的组合：
@@ -961,7 +962,95 @@ object Class4P2 {
 ```
 
 ### 4.3 定义辅助构造函数
-定义多个辅助构造函数，方便用户通过不同的方式创建对象实例
+定义多个辅助构造函数，方便用户通过不同的方式创建对象实例。在类内部以this为名的方法定义辅助构造函数。通过不同的参数列表，定义多个辅助构造函数。提醒：每个构造函数必须调用之前已经定义定义好的构造函数，也就是说，任何辅助构造函数都会调用主构造函数
+
+1. 辅助构造函数必须使用this命名创建
+2. 每个辅助构造函数必须调用之前定义的构造函数开始
+3. 每个构造函数必须有不同的签名(参数列表)
+
+##### 代码:
+```
+class Pizza(var crustSize : Int, var crustType : String) {
+
+  def this(crustSize: Int) {
+    this(crustSize, Pizza.DEFAULT_CRUST_TYPE)
+  }
+
+  override def toString: String = s"Thinking eat Pizza $crustSize, $crustType"
+}
+
+object Pizza {
+  val DEFAULT_CRUST_SIZE = 12
+  val DEFAULT_CRUST_TYPE = "THIN"
+}
+```
+
+#### 4.3.1 为case类生成辅助构造函数
+Case类是一个会自动生成很多模版代码的特殊类。使用类的伴生对象中的apply方法，来为Class类添加一个辅助构造函数
+
+##### 代码
+```
+case class Person4P2(var name : String, var age : Int)
+
+object Person4P2 {
+  def apply(name : String) = new Person4P2(name, 0)
+}
+
+object Class4P3 {
+  var p : Person4P2 = Person4P2("thinking")
+}
+```
+
+### 4.4 定义私有的主构造函数 ----- 单例模式需要
+为了使用单例，需要建立一个私有主构造函数，使用private关键字。Scala中使用单例，需要用到伴生对象
+
+##### 代码
+```
+class Brain private (var name : String, var speed : Long) {
+
+  override def toString: String = s"$name have $speed ms"
+
+  def printBrain() : Unit = {
+    print(toString())
+  }
+}
+
+object Brain {
+  val brain = new Brain("thinking", 1)
+  def getIntance: Brain = brain
+}
+
+object Class4P4 {
+  def main(args: Array[String]): Unit = {
+    Brain.getIntance.printBrain()
+  }
+}
+```
+
+##### 伴生对象 ----- 讨论
+简单来说，一个伴生对象就是定义在与类的同一个文件中，同时对象和类有相同的名字。如上object Brain是类Brain的伴生对象。伴生对象类中的方法都是该对象的静态方法，类似于Java中的静态类
+
+### 4.5 设置构造函数参数的默认值
+给构造函数参数提供一个默认值，在调用构造函数时可以指定或者也可以不指定参数。 eg： class Socket(val timeout : Int = 1000)
+
+##### 代码
+```
+class Socket (val timeout : Int = 1000) {
+
+}
+
+object Class4P5 {
+
+  def main(args: Array[String]): Unit = {
+    val socket : Socket = new Socket(timeout = 3000)
+  }
+}
+```
+
+
+
+
+
 
 
 
