@@ -1048,7 +1048,7 @@ object Class4P5 {
 ```
 
 ### 4.6 覆写默认的访问和修改方法
-覆写Scala自动生成的getter或者setter。Scala中这个优点麻烦，推荐下列方法来实现
+覆写Scala自动生成的getter或者setter。Scala中这个优点麻烦，推荐下列方法来实现覆写默认的方法
 
 ```
 class Stock(var _symbol : String) {
@@ -1061,7 +1061,7 @@ class Stock(var _symbol : String) {
 ```
 
 ### 4.7 阻止生成getter和setter方法
-Scala中如果某个变量定义为var，将会自动生成getter和setter方法;如果变量定义成val，将会自动生成setter方法
+Scala中如果某个变量定义为var，将会自动生成getter和setter方法;如果变量定义成val，将会自动生成getter方法
 
 1. 如果是class，字段没有使用var/val修饰，则不会生成getter和setter方法。如果是case class，字段没有使用var/val修饰，默认为val，生成getter方法
 2. 使用private或private[this]访问修饰符定义字段
@@ -1089,6 +1089,128 @@ class Book {
 ```
 
 ### 4.8 将代码块或者函数赋给字段
+用代码块或者调用函数给类里面的字段初始化赋值，如果算法要求较长的运行时间，可加上lazy关键字
+
+##### 代码
+```
+class FooTest {
+
+  var text = {
+    var lineText="unkonw text"
+    try {
+      lineText = "try code"
+    } catch {
+      case e : Exception => lineText = "catch code"
+    }
+    lineText
+  }
+}
+```
+
+### 4.9 设置未初始化的var字段类型
+在一个类中设置一个未初始化的var字段类型
+
+1. 非String和数字类型的字段，使用Option和Some
+2. String类型字段，缺省为空串。var str : String = ""
+3. 数值类型  ----- 给定合适的类型和默认值。varB : Byte = 0; varC : Char = 0; varl : Long = 0;
+
+##### 代码
+```
+case class Person4P9(var userName : String, var passwd : String) {
+  var age : Int = 0
+  var address: Option[Address] = None : Option[Address]
+}
+
+case class Address(var city : String, var state : String) {
+}
+
+object Class4P9 {
+  def main(args: Array[String]): Unit = {
+    var person : Person4P9 = Person4P9("thinking", "fioa")
+    person.address = Some(Address("beijin", "nanjinRoad"))
+
+    person.address.foreach { a => {
+        println(a.city)
+        println(a.state)
+      }
+    }
+  }
+}
+```
+
+### 4.10 在继承类时处理构造函数参数 ----- 继承必看
+继承一个基类，需要处理定义在基类中构造函数的参数，同时也需要处理子类中的新参数。
+
+通过将基类的构造函数参数定义为var或val。当定义在子类构造函数时，不要用var或val声明类间的公用的字段; 在子类中使用var或者val字段定义新的构造函数
+
+##### 代码
+```
+class Person4P11(var name : String , var age : Int) {
+  override def toString: String = s"name is $name, age is $age"
+}
+
+class Employee(name : String, age : Int, var address : Address) extends Person4P11(name, age){
+  override def toString: String = s"name is $name, age is $age, address is $address"
+}
+
+object Class4P10 {
+  def main(args: Array[String]): Unit = {
+    val employee : Employee  = new Employee("ppp", 26, Address("Anhui", "anqin"))
+    println(employee)
+  }
+}
+```
+
+### 4.11 调用父类的构造函数
+当子类构造函数需要调用超类构造函数，这个Scala语言和Java语言有较大的不同。
+
+Scala中只有子类的主构造函数才有资格调用超类的构造函数，子类的辅构造函数第一行必须是调用当前类的另一个构造函数，所以子类的辅构造函数不能直接调用超类的任何一个构造函数
+
+### 4.12 何时使用抽象类
+Scala中的特质比抽象类更灵活。基于下面两个原因使用抽象类:
+
+1. 需要创建一个有构造函数参数的基类，特质(trait)不允许有构造函数参数
+2. 需要被Java调用
+
+##### 代码
+```
+abstract class BaseController {
+  def save(): Unit = {
+    // save action
+  }
+
+  def update() : Unit = {
+    // update action
+  }
+
+  // abstract method
+  def connect()
+}
+```
+
+#### 4.12.1 Scala中类和对象的总结
+
+1. object ----- 伴生对象，类似于Java中的静态类
+2. class ----- 基本的类，与Java中类似
+3. abstract classs ----- 抽象类，关于何时使用抽象类，参见4.12
+4. case class ----- case类，比较特殊，适用于模式匹配场景使用。与普通的class有如下不同：缺省val和var修饰符，属性的可见性不同; 
+5. trait ----- 特质，类似于Java1.8中接口。可以有属性，方法，抽象方法
+6. 继承Enumeration -----  枚举类，代码参见如下
+
+##### 代码
+```
+object HttpMethod extends Enumeration {
+  type HttpMethod = Value
+  val UNKNOWN = Value("UNKNOWN")
+  val GET = Value("GET")
+  val OCCUR = Value("OCCUR")
+  val POST = Value("POST")
+}
+```
+
+### 4.13 在抽象基类(或者特质)定义属性
+
+
 
 
 
