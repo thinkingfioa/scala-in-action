@@ -1209,14 +1209,120 @@ object HttpMethod extends Enumeration {
 ```
 
 ### 4.13 在抽象基类(或者特质)定义属性
+在一个抽象类(或特质)中声明var 或者 val字段，这些字段可以是抽象的，也可以是具体的实现。在一个抽象类(或特质)里把抽象字段声明成var 或 val，取决于具体的需求
 
+1. 抽象的var生成getter和setter方法
+2. 抽象的val生成getter方法
+3. 在一个抽象类(或特质)中定义一个抽象字段时，Scala编译器不会在结果代码中创建这个字段，只会生成该var或val字段的响应方法
+4. override关键字不是必须的
+5. 开发人员可以在抽象类中定义了一个def字段，而不是val也是可以的
 
+##### 代码
+```
+abstract class Animal4P13 {
+  var greeting : String = "Hello"
+  val age : Int = 0
 
+  val sayHello: Unit = {println(s"Animal4P13, say $greeting")}
+}
 
+class Dog4P13 extends Animal4P13 {
+  greeting = "Dog"
 
+  override val sayHello: Unit = {println(s"Dog4P13, say $greeting")}
+}
 
+object Class4P13 {
 
+  def main(args: Array[String]): Unit = {
+    val dog : Dog4P13 = new Dog4P13()
+  }
+}
+```
 
+### 4.14 用Case类生成模版代码
+Scala生成模版代码，模版代码包括了访问和修改方法，apply，unapply，toString，equals，和hashCode等方法。通过将类定义为Case类会自动生成模版代码的诸多好处:
+
+1. 自动生成一个apply方法，这样就不用new关键字创建新的实例
+2. Case类的构造函数参数默认是val，自动生成getter方法
+3. 自动生成一个toString方法
+4. 自动生成一个unapply方法，在模式匹配是很好用
+5. 自动生成equals方法和hashCode方法
+6. 自动生成copy方法
+
+#### 4.14.1 提醒
+Case类主要是为了创建"不可变的记录"，非常适用于模式匹配场景使用。建议Case类的参数默认是val，不允许写成var，否则就违背了"不可变的记录"的本意
+
+### 4.15 定义一个equals方法(对象的相等性)
+Scala中的对象相等性判断和Java具有较大不同点。众所周知，Java语言中==方法是比较两个对象的引用的相等性；而在Scala中==方法等同于equals方法
+
+##### 代码
+```
+class Person4P14(val name : String, val age : Int) {
+
+  def canEqual(a : Any) : Boolean = a.isInstanceOf[Person4P14]
+
+  override def equals(that : Any) : Boolean = that match {
+    case that : Person4P14 => this.canEqual(that) && this.hashCode() == that.hashCode()
+    case _ => false
+  }
+
+  override def hashCode() : Int = {
+    // TODO 补充hashCode值
+    31
+  }
+}
+```
+
+### 4.16 创建内部类
+Scala内部类从属于外部类对象的，有以下四种内部类的表现形式。(java类中内部类从属于外部类)
+
+1. 外部类class ----- 内部类class
+2. 外部类class ----- 内部对象object
+3. 内部对象object ----- 外部类class
+4. 内部对象object ----- 内部对象object
+
+##### 代码
+```
+class OuterClass {
+  class InnerClass {
+    var x = 1
+  }
+
+  object InnerObject {
+    val y = 2
+  }
+}
+
+object OuterObject {
+  class InnerClass {
+    var m =3
+  }
+
+  object InnerObject {
+    var n = 4
+  }
+}
+
+object Class4P16 {
+
+  //调用外部类中的内部类
+  val oc = new OuterClass
+  var ic = new oc.InnerClass
+  println(ic.x)
+
+  //调用外部类中的内部类对象
+  println(new OuterClass().InnerObject.y)
+  
+  //调用外部对象的内部类
+  println((new OuterObject.InnerClass).m)
+
+  //调用外部对象的内部对象
+  println(OuterObject.InnerObject.n)
+}
+```
+
+### 第5章 方法
 
 
 
