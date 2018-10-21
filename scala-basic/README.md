@@ -1334,11 +1334,78 @@ Scala的方法和Java的方法非常类似，都是定义在类上的行为。�
 ### 5.1 控制方法作用域
 Scala中的方法缺省值为public，按照“最严格”到“最开放”的顺序，Scala提供以下作用域级别:
 
-1. 对象私有作用域
-2. 私有的
-3. 包内可见性
-4. 指定包内可见性
-5. 公共的
+1. private[this] ----- 仅对当前实例可见
+2. private  ----- 对当前类的所有实例可见
+3. protected  ----- 对当前类及其所有子类的实例可见。该点与Java不同，Java中protected同时对同一个包下所有类可见，而Scala不可以
+4. private\[packageName\](包内可见性)  ------ 对*.packageName包下所有类可见
+5. public(公开方法)  -----  如果方法声明上没有访问修饰符，方法就是公开级别。任何包下任何类都可以访问
+
+### 5.2 调用父类的方法
+为了减少重复代码，希望调用一个父类或者特质中的方法。通常情况下Scala直接调用父类的方法和Java是相同的：用super代表父类。但也存在不同点:当类继承了多个特质，并且特质实现了相同的方法，需要制定使用的特质。
+
+##### 代码:
+```java
+trait Human {
+  def hello : String = "the Human trait"
+}
+
+trait Mother extends Human {
+  override def hello: String = "Mother"
+}
+
+trait Father extends Human {
+  override def hello: String = "Father"
+}
+
+class Child extends Human with Mother with Father {
+  def printSupper : String = super.hello
+  def printMother : String = super[Mother].hello
+  def printFather : String = super[Father].hello
+  def printHuman : String = super[Human].hello
+
+  def print(): Unit = {
+    println(s"supper $printSupper")
+    println(s"Mother $printMother")
+    println(s"Father $printFather")
+    println(s"Human $printHuman")
+  }
+}
+
+object Child {
+  def apply() = new Child()
+}
+
+object Method5P2 {
+  def main(args: Array[String]): Unit = {
+    val child : Child = Child()
+    child.print()
+  }
+}
+```
+
+#### 注意
+当使用supper[traitName].methodName来指定使用哪个特质上的方法时，目标特质必须被当前类通过extends或者with关键字扩张，否则编译失败。
+
+### 5.3 方法参数默认值
+希望给方法的参数设置默认值，因此调用此方法是可以省略传参。
+
+##### 代码
+```
+class Connection {
+  def connection(timeout : Int = 5000, protocol : String = "http"): Unit = {
+    println("timeout = %d, protocol = %s".format(timeout, protocol))
+  }
+}
+
+object Method5P3 {
+  def main(args: Array[String]): Unit = {
+    val connection : Connection = new Connection()
+    connection.connection()
+  }
+}
+```
+
+### 5.4 使用参数名
 
 
 
