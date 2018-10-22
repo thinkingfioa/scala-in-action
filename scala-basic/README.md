@@ -1406,8 +1406,36 @@ object Method5P3 {
 ```
 
 ### 5.4 使用参数名
+偏向于在调用方法时指定参数名
 
+##### 代码
+```
+class Pizza {
+  var size = 12
+  var price = 200
 
+  def update(currSize : Int, currPrice : Int) : Unit = {
+    this.size = currSize
+    this.price = currPrice
+  }
+
+  def print() : Unit = {
+    println(s"size $size, price $price")
+  }
+}
+
+object Method5P4 {
+
+  def main(args: Array[String]): Unit = {
+    var pizza : Pizza = new Pizza()
+    pizza.update(currPrice = 15, currSize = 100)
+    pizza.print()
+  }
+}
+```
+
+### 5.5 定义一个返回多个值(Tuples)的方法
+希望从一个方法中返回多个值，但不希望这些值临时包装成一个类
 
 import scala.beans.BeanProperty
 
