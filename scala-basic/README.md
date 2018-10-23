@@ -1435,9 +1435,84 @@ object Method5P4 {
 ```
 
 ### 5.5 定义一个返回多个值(Tuples)的方法
-希望从一个方法中返回多个值，但不希望这些值临时包装成一个类
+希望从一个方法中返回多个值，在Java中，由于无法返回多值，通常使用一个"临时包装类"中返回，Scala中只需要以tuple的形式返回即可。
 
-import scala.beans.BeanProperty
+##### 代码
+```
+class MoreReturnValue() {
+
+  def fetchMoreReturn() : (String, Int, Int) = {
+    ("thinking", 23, 125)
+  }
+}
+
+object Method5P5 {
+
+  def main(args: Array[String]): Unit = {
+    val moreReturnValue : MoreReturnValue = new MoreReturnValue()
+    val (name, age, weight) = moreReturnValue.fetchMoreReturn()
+    println(s"name is $name, age is $age, weight is $weight")
+  }
+}
+```
+
+### 5.6 生成Java类型的getter／setter方法 ----- BeanProperty
+使用scala.beans.BeanProperty注解，自动生成和Java类似的getter/setter方法。在JSON转换时非常有用
+
+##### 代码
+```
+class Pizza5P6(@BeanProperty var price : Int, @BeanProperty var size:Int) {
+
+}
+
+object Method5P6 {
+
+  def main(args: Array[String]): Unit = {
+    val pizza : Pizza5P6 = new Pizza5P6(100, 12)
+    println("price "+pizza.getPrice)
+    println("size "+pizza.getSize)
+  }
+}
+```
+
+### 5.7 创建接受变参的方法
+为了让方法更加灵活，可以将方法参数定义为接受多个参数
+
+1. 在参数类型后面加上一个\*。eg: def printAll(strings : String\*)
+2. 使用_\*来适配一个序列。 eg : def printlnAll(fruits : _\*)。从而使得它可以被当作变参传给一个方法
+3. 变参必须是方法签名中的最后一个参数
+
+##### 代码
+```
+class Method5P7 {
+  def printAll(strings : String*): Unit = {
+    strings.foreach(println)
+  }
+}
+
+object Method5P7 {
+  def main(args: Array[String]): Unit = {
+    val method : Method5P7 = new Method5P7()
+
+    method.printAll("thinking", "fioa", "ppp")
+    val fruits = List("apple", "apple2")
+    method.printAll(fruits : _*)
+  }
+}
+```
+
+### 5.8 方法的异常声明
+
+
+
+
+
+
+
+
+
+
+
 
 
 
