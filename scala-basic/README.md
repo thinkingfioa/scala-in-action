@@ -1502,6 +1502,75 @@ object Method5P7 {
 ```
 
 ### 5.8 方法的异常声明
+给方法增加异常声明，为了让调用者知道也为了可以从Java代码调用。使用@throws注解声明可能抛出的异常。值得注意的是，Scala中不强制要求方法声明可能抛出的受检异常，也不要求调用者捕捉受检异常。但是如果异常发生，线程执行会停止。
+
+##### 代码
+```
+class Method5P8 () {
+
+  @throws[UnsupportedOperationException]
+  @throws[NullPointerException]
+  def playSound(): Unit = {
+
+  }
+}
+```
+
+### 5.9 支持链式调用编程风格
+链式调用风格的代码能够把方法调用链接起来。如: person.setFirstName("thinking").setAge(23)。为了支持这种风格的代码，需要:
+
+1. 如果类可能会被扩展，则把this.type作为链式调用风格方法的返回值类型。
+2. 如果类不会被扩展，则把this从链式调用方法中返回出来。
+
+#### 5.9.1 类会被扩展
+如果类可以被扩展，把方法的返回值显式指定为this.type能够确保链式调用能在自类中仍能正常工作
+
+##### 代码
+```
+class Person5P9 {
+  protected var fname = ""
+  protected var lname = ""
+
+  def setFirstName(firstName : String) : this.type = {
+    this.fname = firstName
+    this
+  }
+
+  def setLastName(lastName : String) : this.type = {
+    this.lname = lastName
+    this
+  }
+}
+
+class Employee extends Person5P9 {
+  protected var role = ""
+
+  def setRole(role : String) : this.type  = {
+    this.role = role
+    this
+  }
+}
+```
+
+#### 5.9.2 类不会扩展
+如果确定类不会被扩展，就没有必要将setXXX方法的返回值类型指定为this.type，只需在每个链式方法的最后返回this即可
+
+##### 代码
+```
+class Employee {
+  protected var role = ""
+
+  def setRole(role : String) = {
+    this.role = role
+    this
+  }
+}
+```
+
+## 第6章 对象
+
+
+
 
 
 
