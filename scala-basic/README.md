@@ -1569,6 +1569,38 @@ class Employee {
 
 ## 第6章 对象
 
+### 6.1 对象的强制转换
+将一个类的实例强制转换为另一个类型，如动态创建对象。类似于Java代码: Recognizer recognizer = (Recognizer)cm.lookup("recognizer")。Scala使用asInstanceOf方法，将一个实例转换为期望的类型
+
+##### 代码:
+```
+val b = a.asInstanceOf[Long]
+val emailAccount = yaml.load(text).asInstanceOf[EmailAccount]
+```
+
+### 6.2 Java.class的Scala等价类
+当一个API需要传入一个类时，Java中调用对象的.class获得(eg: config.class)。Scala中使用classOf方法来获得
+
+##### 代码
+```
+val info = new DataLine.Info(classOf[TargetDataLine], null)
+// java code
+info = new DataLine.Info(TargetDataLine.class, null)
+```
+
+### 6.3 确定对象所属的类
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
