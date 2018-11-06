@@ -1323,6 +1323,8 @@ object Class4P16 {
 ```
 
 ## 第5章 方法
+[第5章项目源代码阅读](https://github.com/thinkingfioa/scala-in-action/tree/master/scala-basic/src/main/scala/org/lwl/scala/basic/chapter/five)
+
 Scala的方法和Java的方法非常类似，都是定义在类上的行为。但是也有以下区别点:
 
 1. 指定方法的访问控制(可见性)
@@ -1568,6 +1570,7 @@ class Employee {
 ```
 
 ## 第6章 对象
+[第6章项目源代码阅读](https://github.com/thinkingfioa/scala-in-action/tree/master/scala-basic/src/main/scala/org/lwl/scala/basic/chapter/six)
 
 ### 6.1 对象的强制转换
 将一个类的实例强制转换为另一个类型，如动态创建对象。类似于Java代码: Recognizer recognizer = (Recognizer)cm.lookup("recognizer")。Scala使用asInstanceOf方法，将一个实例转换为期望的类型
